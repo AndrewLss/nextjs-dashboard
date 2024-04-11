@@ -8,7 +8,7 @@ export default function NotFound() {
       <h2 className="text-xl font-semibold">404 Nao Encontrado</h2>
       <p>Nao foi possivel encontrar o registro solicitado.</p>
       <Link
-        href="/dashboard/invoices"
+        href="/dashboard/books"
         className="mt-4 rounded-md bg-green-700 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
       >
         Voltar
