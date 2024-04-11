@@ -16,7 +16,7 @@ export default async function Page() {
         breadcrumbs={[
           { label: 'Livros', href: '/dashboard/books' },
           {
-            label: 'Cadastrar Livro,
+            label: 'Cadastrar Livro',
             href: '/dashboard/books/create',
             active: true,
           },
