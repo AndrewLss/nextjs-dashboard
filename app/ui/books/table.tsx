@@ -1,54 +1,50 @@
-import Image from 'next/image';
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredInvoices } from '@/app/lib/data';
+import { UpdateBook, DeleteBook } from '@/app/ui/books/buttons'; //done
+import { formatDateToLocal} from '@/app/lib/utils';
+import { fetchFilteredBooks } from '@/app/lib/data'; //done
 
-export default async function InvoicesTable({
+export default async function BooksTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
+  const books = await fetchFilteredBooks(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {invoices?.map((invoice) => (
+            {books?.map((book) => (
               <div
-                key={invoice.id}
+                key={book.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
-                    <div className="mb-2 flex items-center">
-                      <Image
-                        src={invoice.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
+                    <div className="mb-2 flex items-center">                      
+                      <p>{book.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{invoice.email}</p>
-                  </div>
-                  <InvoiceStatus status={invoice.status} />
+                    <p className="text-sm text-gray-500">{book.author}</p>
+                  </div>                  
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {formatCurrency(invoice.amount)}
+                      {book.amt_available}
                     </p>
-                    <p>{formatDateToLocal(invoice.date)}</p>
+                    <p>{book.amt_borrowed}</p>
+                  </div>
+                  <div>
+                    <div className="mb-2 flex items-center">                      
+                      <p>{book.observation}</p>
+                    </div>
+                    <p className="text-sm text-gray-500">{formatDateToLocal(book.inclusion_date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateInvoice id={invoice.id} />
-                    <DeleteInvoice id={invoice.id} />
+                    <UpdateBook id={book.id} />
+                    <DeleteBook id={book.id} />
                   </div>
                 </div>
               </div>
@@ -58,19 +54,25 @@ export default async function InvoicesTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Aluno
+                  Livro
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  Autor
+                </th>
+                <th scope="col" className="px-3 py-5 text-center font-medium">
+                  Disponivel
+                </th>
+                <th scope="col" className="px-3 py-5 text-center font-medium">
+                  Emprestado
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Quantidade
+                  Observacao
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Data
+                <th scope="col" className="px-3 py-5 text-center font-medium">
+                  Data de Inclusao
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Situacao
+                <th scope="col" className="px-3 py-5 text-center font-medium">
+                  Caixa
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Editar</span>
@@ -78,39 +80,38 @@ export default async function InvoicesTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {invoices?.map((invoice) => (
+              {books?.map((book) => (
                 <tr
-                  key={invoice.id}
+                  key={book.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
+                    <div className="flex items-center gap-3">                      
+                      <p>{book.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
+                    {book.author}
+                  </td>
+                  <td className="whitespace-nowrap text-center px-3 py-3">
+                    {book.amt_available}
+                  </td>
+                  <td className="whitespace-nowrap text-center px-3 py-3">
+                    {book.amt_borrowed}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(invoice.amount)}
+                    {book.observation}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(invoice.date)}
+                  <td className="whitespace-nowrap text-center px-3 py-3">
+                    {formatDateToLocal(book.inclusion_date)}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={invoice.status} />
+                  <td className="whitespace-nowrap text-center px-3 py-3">
+                    {book.box}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={invoice.id} />
-                      <DeleteInvoice id={invoice.id} />
+                      <UpdateBook id={book.id} />
+                      <DeleteBook id={book.id} />
                     </div>
                   </td>
                 </tr>

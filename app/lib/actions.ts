@@ -116,6 +116,17 @@ export async function deleteInvoice(id: string) {
   }
 }
 
+export async function deleteBook(id: string) {
+  throw new Error('Falha em excluir livro');
+  try {
+    await sql`DELETE FROM books WHERE id = ${id}`;
+    revalidatePath('/dashboard/books');
+    return { message: 'Livro Excluido.' };
+  } catch (error) {
+    return { message: 'Erro de Banco de Dados: Falha em Excluir Livro.' };
+  }
+}
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,

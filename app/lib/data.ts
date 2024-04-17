@@ -4,6 +4,7 @@ import {
   CustomersTableType,
   InvoiceForm,
   InvoicesTable,
+  Book,
   LatestInvoiceRaw,
   User,
   Revenue,
@@ -127,6 +128,45 @@ export async function fetchFilteredInvoices(
   }
 }
 
+export async function fetchFilteredBooks(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const books = await sql<Book>`
+      SELECT
+        id,
+        name,
+        author,
+        amt_available,
+        amt_borrowed,
+        observation,
+        inclusion_date,
+        box      
+      FROM books      
+      WHERE
+        books.name ILIKE ${`%${query}%`} OR
+        books.author ILIKE ${`%${query}%`} OR
+        books.amt_available::text ILIKE ${`%${query}%`} OR
+        books.amt_borrowed::text ILIKE ${`%${query}%`} OR
+        books.observation ILIKE ${`%${query}%`} OR
+        books.inclusion_date::text ILIKE ${`%${query}%`} OR
+        books.box ILIKE ${`%${query}%`}
+
+      ORDER BY books.name DESC     
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return books.rows;
+  } catch (error) {
+    console.error('Erro de Banco de Dados:', error);
+    throw new Error('Falha em buscar livros.');
+  }
+}
+
 export async function fetchInvoicesPages(query: string) {
   noStore();
   try {
@@ -146,6 +186,28 @@ export async function fetchInvoicesPages(query: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of invoices.');
+  }
+}
+
+export async function fetchBooksPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM books    
+    WHERE
+      books.name ILIKE ${`%${query}%`} OR
+      books.author ILIKE ${`%${query}%`} OR
+      books.amt_available::text ILIKE ${`%${query}%`} OR
+      books.amt_borrowed::text ILIKE ${`%${query}%`} OR
+      books.observation ILIKE ${`%${query}%`} OR
+      books.inclusion_date::text ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Erro de Banco de Dados:', error);
+    throw new Error('Falha em buscar o numero total de livros');
   }
 }
 
@@ -173,48 +235,6 @@ export async function fetchInvoiceById(id: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch invoice.');
-  }
-}
-
-export async function fetchFilteredBooks(
-  query: string,
-  currentPage: number,
-) {
-  noStore();
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
-  try {
-    const invoices = await sql<InvoicesTable>`
-      SELECT
-        book_id,
-        name        
-      FROM books      
-      WHERE
-        books.name ILIKE ${`%${query}%`}     
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    `;
-
-    return invoices.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
-  }
-}
-
-export async function fetchBooksPages(query: string) {
-  noStore();
-  try {
-    const count = await sql`SELECT COUNT(*)
-    FROM books    
-    WHERE
-      books.name ILIKE ${`%${query}%`}
-  `;
-
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
-    return totalPages;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of invoices.');
   }
 }
 

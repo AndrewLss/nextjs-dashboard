@@ -1,6 +1,8 @@
+// primary alteration done
+
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { deleteInvoice } from '@/app/lib/actions';
+import { deleteBook } from '@/app/lib/actions'; //done
 
 export function CreateBook() {
   return (
@@ -26,7 +28,7 @@ export function UpdateBook({ id }: { id: string }) {
 }
 
 export function DeleteBook({ id }: { id: string }) {
-  const deleteBookWithId = deleteInvoice.bind(null, id);
+  const deleteBookWithId = deleteBook.bind(null, id);
   return (
     <form action={deleteBookWithId}>
       <button className="rounded-md border p-2 hover:bg-gray-100">

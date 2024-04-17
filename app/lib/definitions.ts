@@ -26,6 +26,17 @@ export type Invoice = {
   status: 'pending' | 'paid';
 };
 
+export type Book = {
+  id: string;
+  name: string;
+  author: string;
+  amt_available: number;
+  amt_borrowed: number;
+  observation: string;
+  inclusion_date: string;
+  box: string;
+};
+
 export type Revenue = {
   month: string;
   revenue: number;
