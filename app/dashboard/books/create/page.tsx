@@ -1,6 +1,6 @@
-import Form from '@/app/ui/books/create-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchCustomers } from '@/app/lib/data';
+import Form from '@/app/ui/books/create-form'; //done
+import Breadcrumbs from '@/app/ui/books/breadcrumbs'; //ok
+import { fetchBooks } from '@/app/lib/data'; //done
 import { Metadata } from 'next';
  
 export const metadata: Metadata = {
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
  
 export default async function Page() {
-  const customers = await fetchCustomers();
+  const books = await fetchBooks();
  
   return (
     <main>
@@ -22,7 +22,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form customers={customers} />
+      <Form books={books} />
     </main>
   );
 }

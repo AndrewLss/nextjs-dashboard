@@ -1,28 +1,29 @@
 'use client';
 
-import { BookField } from '@/app/lib/definitions'; //done
-import Link from 'next/link'; //ok
+import { StudentForm } from '@/app/lib/definitions'; //done
 import {
-  ArchiveBoxIcon,
-  BookOpenIcon,  
-  ClipboardIcon,  
+  CalendarIcon,  
+  ClipboardIcon,
+  BuildingLibraryIcon,
   UserCircleIcon,
-  ViewColumnsIcon,
-} from '@heroicons/react/24/outline'; //included
+} from '@heroicons/react/24/outline'; //done
+import Link from 'next/link'; //ok
 import { Button } from '@/app/ui/button'; //ok
-import { createBook } from '@/app/lib/actions'; //done
+import { updateStudent } from '@/app/lib/actions'; //done
 import { useFormState } from 'react-dom'; //ok
 
-export default function Form({ books }: { books: BookField[] }) {
+export default function EditStudentForm({ student }: { student: StudentForm }) {
   const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(createBook, initialState);
+  const updateStudentWithId = updateStudent.bind(null, student.id);
+  const [state, dispatch] = useFormState(updateStudentWithId, initialState);
+ 
   return (
     <form action={dispatch}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">        
-        {/* Nome do Livro */}
+      <div className="rounded-md bg-gray-50 p-4 md:p-6">
+        {/* Nome do Aluno */}
         <div className="mb-4">
           <label htmlFor="name" className="mb-2 block text-sm font-medium">
-            Insira o Nome
+            Insira o Nome Completo
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -30,11 +31,12 @@ export default function Form({ books }: { books: BookField[] }) {
                 id="name"
                 name="name"
                 type="text"                
-                placeholder="Nome do Livro"
+                placeholder="Nome do Aluno"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                aria-describedby="name-error"              
+                aria-describedby="name-error"
+                defaultValue={student.name}              
               />
-              <BookOpenIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
             <div id="name-error" aria-live="polite" aria-atomic="true">
               {state.errors?.name &&
@@ -47,26 +49,28 @@ export default function Form({ books }: { books: BookField[] }) {
           </div>
         </div>
 
-        {/* Nome do Autor */}
+        {/* Idade */}
         <div className="mb-4">
-          <label htmlFor="author" className="mb-2 block text-sm font-medium">
-            Insira o Autor
+          <label htmlFor="age" className="mb-2 block text-sm font-medium">
+            Insira a idade
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="author"
-                name="author"
-                type="text"                
-                placeholder="Nome do Autor"
+                id="age"
+                name="age"
+                type="number"
+                step="1"
+                placeholder="Insira a idade"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                aria-describedby="author-error"              
+                aria-describedby="age-error"
+                defaultValue={student.age}              
               />
-              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-            <div id="author-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.author &&
-                state.errors.author.map((error: string) => (
+            <div id="age-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.age &&
+                state.errors.age.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
@@ -75,27 +79,27 @@ export default function Form({ books }: { books: BookField[] }) {
           </div>
         </div>
 
-        {/* Quantidade */}
+        {/* Classe/Sala */}
         <div className="mb-4">
-          <label htmlFor="amt_available" className="mb-2 block text-sm font-medium">
-            Insira a Quantidade
+          <label htmlFor="classroom" className="mb-2 block text-sm font-medium">
+            Insira a classe/sala
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="amt_available"
-                name="amt_available"
-                type="number"
-                step="1"                
-                placeholder="Quantidade disponível"
+                id="classroom"
+                name="classroom"
+                type="text"                
+                placeholder="Classe ou sala"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                aria-describedby="amt_available-error"              
+                aria-describedby="classroom-error"
+                defaultValue={student.classroom}              
               />
-              <ViewColumnsIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <BuildingLibraryIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-            <div id="amt_available-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.amt_available &&
-                state.errors.amt_available.map((error: string) => (
+            <div id="classroom-error" aria-live="polite" aria-atomic="true">
+              {state.errors?.classroom &&
+                state.errors.classroom.map((error: string) => (
                   <p className="mt-2 text-sm text-red-500" key={error}>
                     {error}
                   </p>
@@ -117,7 +121,8 @@ export default function Form({ books }: { books: BookField[] }) {
                 type="text"                
                 placeholder="Observações"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                aria-describedby="observation-error"              
+                aria-describedby="observation-error"
+                defaultValue={student.observation}              
               />
               <ClipboardIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -131,43 +136,15 @@ export default function Form({ books }: { books: BookField[] }) {
             </div>
           </div>
         </div>
-
-        {/* Caixa */}
-        <div className="mb-4">
-          <label htmlFor="box" className="mb-2 block text-sm font-medium">
-            Caixa
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="box"
-                name="box"
-                type="text"                
-                placeholder="Caixa onde se encontra"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                aria-describedby="box-error"              
-              />
-              <ArchiveBoxIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-            <div id="box-error" aria-live="polite" aria-atomic="true">
-              {state.errors?.box &&
-                state.errors.box.map((error: string) => (
-                  <p className="mt-2 text-sm text-red-500" key={error}>
-                    {error}
-                  </p>
-                ))}
-            </div>
-          </div>
-        </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard/books"
+          href="/dashboard/students"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancelar
         </Link>
-        <Button type="submit">Cadastrar Livro</Button>
+        <Button type="submit">Editar Aluno</Button>
       </div>
     </form>
   );

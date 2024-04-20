@@ -37,6 +37,15 @@ export type Book = {
   box: string;
 };
 
+export type Student = {
+  id: string;
+  name: string;  
+  age: number;
+  classroom: string;
+  inclusion_date: string;
+  observation: string;  
+};
+
 export type Revenue = {
   month: string;
   revenue: number;
@@ -79,11 +88,26 @@ export type CustomersTableType = {
 export type FormattedCustomersTable = {
   id: string;
   name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: string;
-  total_paid: string;
+  age: number;
+  classroom: string;
+};
+
+export type StudentsTableType = {
+  id: string;
+  name: string;
+  age: number;
+  classroom: string;
+  total_loans: number;
+  total_returns: number;
+};
+
+export type FormattedStudentsTable = {
+  id: string;
+  name: string;
+  age: number;
+  classroom: string;
+  total_loans: number;
+  total_returns: number;
 };
 
 export type CustomerField = {
@@ -91,9 +115,50 @@ export type CustomerField = {
   name: string;
 };
 
+export type BookField = {
+  id: string;
+  name: string;
+  author: string;
+  amt_available: number;
+  amt_borrowed: number;
+  observation: string;
+  inclusion_date: string;
+  box: string;
+};
+
+export type StudentField = {
+  id: string;
+  name: string;
+  age: number;
+  classroom: string;
+  inclusion_date: string;
+  observation: string;
+};
+
+
 export type InvoiceForm = {
   id: string;
   customer_id: string;
   amount: number;
   status: 'pending' | 'paid';
+};
+
+export type BookForm = {
+  id: string;
+  name: string;
+  author: string;
+  amt_available: number;
+  amt_borrowed: number;
+  observation: string;
+  inclusion_date: string;
+  box: string;
+};
+
+export type StudentForm = {
+  id: string;
+  name: string;
+  age: number;
+  classroom: string;
+  inclusion_date: string;
+  observation: string;
 };

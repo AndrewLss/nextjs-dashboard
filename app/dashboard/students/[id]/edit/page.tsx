@@ -1,6 +1,6 @@
-import Form from '@/app/ui/books/edit-form';
-import Breadcrumbs from '@/app/ui/books/breadcrumbs';
-import { fetchBookById} from '@/app/lib/data';
+import Form from '@/app/ui/students/edit-form'; //done
+import Breadcrumbs from '@/app/ui/students/breadcrumbs'; //ok
+import { fetchStudentById} from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
  
@@ -10,9 +10,9 @@ export const metadata: Metadata = {
  
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
-    const book = await fetchBookById(id);
+    const student = await fetchStudentById(id);
 
-      if (!book) {
+      if (!student) {
         notFound();
       }
      
@@ -20,15 +20,15 @@ export default async function Page({ params }: { params: { id: string } }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Livros', href: '/dashboard/books' },
+          { label: 'Livros', href: '/dashboard/students' },
           {
-            label: 'Editar Livro',
-            href: `/dashboard/books/${id}/edit`,
+            label: 'Editar Aluno',
+            href: `/dashboard/students/${id}/edit`,
             active: true,
           },
         ]}
       />
-      <Form book={book} />
+      <Form student={student} />
     </main>
   );
 }

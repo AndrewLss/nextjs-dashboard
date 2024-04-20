@@ -1,12 +1,12 @@
-import Pagination from '@/app/ui/invoices/pagination';
-import Search from '@/app/ui/search';
-import Table from '@/app/ui/invoices/table';
-import { CreateCustomer } from '@/app/ui/customers/buttons';
-import { lusitana } from '@/app/ui/fonts';
-import { Suspense } from 'react';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
-import { fetchInvoicesPages } from '@/app/lib/data';
-import { Metadata } from 'next';
+import Pagination from '@/app/ui/students/pagination'; //ok
+import Search from '@/app/ui/search'; //ok
+import Table from '@/app/ui/students/table'; //done
+import { CreateStudent } from '@/app/ui/students/buttons'; //done
+import { lusitana } from '@/app/ui/fonts'; //ok
+import { Suspense } from 'react'; //ok
+import { StudentsTableSkeleton } from '@/app/ui/skeletons'; //done
+import { fetchStudentsPages } from '@/app/lib/data'; //done
+import { Metadata } from 'next'; //done
  
 export const metadata: Metadata = {
   title: 'Alunos',
@@ -23,7 +23,7 @@ export default async function Page({
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
 
-  const totalPages = await fetchInvoicesPages(query);
+  const totalPages = await fetchStudentsPages(query);
 
   return (
     <div className="w-full">
@@ -32,9 +32,9 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Encontrar alunos..." />
-        <CreateCustomer />
+        <CreateStudent />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+      <Suspense key={query + currentPage} fallback={<StudentsTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">

@@ -1,13 +1,19 @@
 import { sql } from '@vercel/postgres';
 import {
+  Book,
+  BookField,
+  BookForm,  
   CustomerField,
   CustomersTableType,
   InvoiceForm,
   InvoicesTable,
-  Book,
   LatestInvoiceRaw,
+  Student,
+  StudentField,
+  StudentForm,
   User,
   Revenue,
+  //StudentField,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -155,8 +161,7 @@ export async function fetchFilteredBooks(
         books.observation ILIKE ${`%${query}%`} OR
         books.inclusion_date::text ILIKE ${`%${query}%`} OR
         books.box ILIKE ${`%${query}%`}
-
-      ORDER BY books.name DESC     
+      ORDER BY books.name ASC     
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
@@ -164,6 +169,40 @@ export async function fetchFilteredBooks(
   } catch (error) {
     console.error('Erro de Banco de Dados:', error);
     throw new Error('Falha em buscar livros.');
+  }
+}
+
+export async function fetchFilteredStudents(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const students = await sql<Student>`
+      SELECT
+        id,
+        name,
+        age,
+        classroom,
+        inclusion_date,
+        observation
+      FROM students      
+      WHERE
+      students.name ILIKE ${`%${query}%`} OR
+      students.age::text ILIKE ${`%${query}%`} OR
+      students.classroom ILIKE ${`%${query}%`} OR
+      students.inclusion_date::text ILIKE ${`%${query}%`} OR
+      students.observation ILIKE ${`%${query}%`}
+      ORDER BY students.name ASC     
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return students.rows;
+  } catch (error) {
+    console.error('Erro de Banco de Dados:', error);
+    throw new Error('Falha em encontrar alunos.');
   }
 }
 
@@ -211,6 +250,27 @@ export async function fetchBooksPages(query: string) {
   }
 }
 
+export async function fetchStudentsPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM students    
+    WHERE
+      students.name ILIKE ${`%${query}%`} OR
+      students.age::text ILIKE ${`%${query}%`} OR
+      students.classroom ILIKE ${`%${query}%`} OR
+      students.inclusion_date::text ILIKE ${`%${query}%`} OR
+      students.observation ILIKE ${`%${query}%`} 
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Erro de Banco de Dados:', error);
+    throw new Error('Falha em buscar o numero total de alunos');
+  }
+}
+
 export async function fetchInvoiceById(id: string) {
   noStore();
   try {
@@ -238,6 +298,59 @@ export async function fetchInvoiceById(id: string) {
   }
 }
 
+export async function fetchBookById(id: string) {
+  noStore();
+  try {
+    const data = await sql<BookForm>`
+      SELECT
+        books.id,
+        books.name,
+        books.author,
+        books.amt_available,
+        books.observation,
+        books.box
+      FROM books
+      WHERE books.id = ${id};
+    `;    
+
+    const book = data.rows.map((book) => ({
+      ...book,
+    }));
+    
+    console.log(book); // Book is an empty array []
+    return book[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch book.');
+  }
+}
+
+export async function fetchStudentById(id: string) {
+  noStore();
+  try {
+    const data = await sql<StudentForm>`
+      SELECT
+        students.id,
+        students.name,
+        students.age,
+        students.classroom,
+        students.observation
+      FROM students
+      WHERE students.id = ${id};
+    `;    
+
+    const student = data.rows.map((student) => ({
+      ...student,
+    }));
+    
+    console.log(student); // Book is an empty array []
+    return student[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch student.');
+  }
+}
+
 export async function fetchCustomers() {
   try {
     const data = await sql<CustomerField>`
@@ -253,6 +366,50 @@ export async function fetchCustomers() {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all customers.');
+  }
+}
+
+export async function fetchBooks() {
+  try {
+    const data = await sql<BookField>`
+      SELECT
+        id,
+        name,
+        author,
+        amt_available,
+        observation,
+        box
+      FROM books
+      ORDER BY name ASC
+    `;
+
+    const books = data.rows;
+    return books;
+  } catch (err) {
+    console.error('Erro de Banco de Dados:', err);
+    throw new Error('Falha em buscar livros.');
+  }
+}
+
+export async function fetchStudents() {
+  try {
+    const data = await sql<StudentField>`
+      SELECT
+        id,
+        name,
+        age,
+        classroom,
+        inclusion_date,
+        observation
+      FROM students
+      ORDER BY name ASC
+    `;
+
+    const books = data.rows;
+    return books;
+  } catch (err) {
+    console.error('Erro de Banco de Dados:', err);
+    throw new Error('Falha em buscar alunos.');
   }
 }
 
