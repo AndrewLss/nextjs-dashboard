@@ -23,7 +23,7 @@ const FormSchema = z.object({
 
 const FormSchemaBooks = z.object({
   id: z.string(),
-  name: z.string().min(3, { 
+  book: z.string().min(3, { 
     message: "Por favor insira o nome do livro" 
   }),
   author: z.string().min(3, { 
@@ -36,6 +36,26 @@ const FormSchemaBooks = z.object({
   box: z.string().min(1, { 
     message: "Por favor insira a caixa onde se encontra" 
   }),   
+});
+
+const FormSchemaLoans = z.object({
+  id: z.string(),
+  book_Id: z.string({
+    invalid_type_error: 'Por favor selecione o livro.',
+  }),
+  student_Id: z.string({
+    invalid_type_error: 'Por favor selecione o aluno.',
+  }),
+  loan_date: z.string().min(8, { 
+    message: 'Por favor insira a data do empréstimo.' 
+  }),
+  return_date: z.string().min(8, { 
+    message: 'Por favor insira a data da devolução' 
+  }),
+  status: z.enum(['pending', 'returned'], {
+    invalid_type_error: 'Por favor selecione uma situação.',
+  }),  
+  observation: z.string(),
 });
 
 const FormSchemaStudent = z.object({
@@ -56,6 +76,8 @@ const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 const CreateBook = FormSchemaBooks.omit({ id: true, amt_borrowed: true, inclusion_date: true });
 const UpdateBook = FormSchemaBooks.omit({ id: true, amt_borrowed: true, inclusion_date: true });
+const CreateLoan = FormSchemaLoans.omit({ id: true });
+const UpdateLoan = FormSchemaLoans.omit({ id: true });
 const CreateStudent = FormSchemaStudent.omit({ id: true, inclusion_date: true });
 const UpdateStudent = FormSchemaStudent.omit({ id: true, inclusion_date: true });
 
@@ -70,11 +92,23 @@ export type State = {
 
 export type StateBook = {
   errors?: {
-    name?: string[];
+    book?: string[];
     author?: string[];
     amt_available?: string[];
     observation?: string[];
     box?: string[];    
+  };
+  message?: string | null;
+};
+
+export type StateLoan = {
+  errors?: {
+    book_Id?: string[];
+    student_Id?: string[];
+    loan_date?: string[];
+    return_date?: string[];
+    status?: string[];
+    observation?: string[];
   };
   message?: string | null;
 };
@@ -129,7 +163,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
 export async function createBook(prevState: StateBook, formData: FormData) {
   // Validate form fields using Zod
   const validatedFields = CreateBook.safeParse({
-    name: formData.get('name'),
+    book: formData.get('book'),
     author: formData.get('author'),
     amt_available: formData.get('amt_available'),
     observation:  formData.get('observation'),    
@@ -145,13 +179,13 @@ export async function createBook(prevState: StateBook, formData: FormData) {
   }
  
   // Prepare data for insertion into the database
-  const { name, author, amt_available, observation, box } = validatedFields.data;    
+  const { book, author, amt_available, observation, box } = validatedFields.data;    
   const inclusion_date = new Date().toISOString().split('T')[0];
  
   try {
     await sql`
-      INSERT INTO books (name, author, amt_available, observation, box, inclusion_date)
-      VALUES (${name}, ${author}, ${amt_available}, ${observation}, ${box}, ${inclusion_date})
+      INSERT INTO books (book, author, amt_available, observation, box, inclusion_date)
+      VALUES (${book}, ${author}, ${amt_available}, ${observation}, ${box}, ${inclusion_date})
     `;
   } catch (error) {
     return {
@@ -162,6 +196,44 @@ export async function createBook(prevState: StateBook, formData: FormData) {
    // Revalidate the cache for the books page and redirect the user.
   revalidatePath('/dashboard/books');
   redirect('/dashboard/books');
+}
+
+export async function createLoan(prevState: StateLoan, formData: FormData) {
+  // Validate form fields using Zod
+  const validatedFields = CreateLoan.safeParse({
+    book_Id: formData.get('book_Id'),
+    student_Id: formData.get('student_Id'),
+    loan_date: formData.get('loan_date'),
+    return_date: formData.get('return_date'),
+    status: formData.get('status'),
+    observation: formData.get('observation'),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Faltando Campos. Falha em criar Empréstimo.',
+    };
+  }
+ 
+  // Prepare data for insertion into the database
+  const { book_Id, student_Id, loan_date, return_date, status, observation } = validatedFields.data;  
+ 
+  try {
+    await sql`
+      INSERT INTO loans (book_id, student_id, loan_date, return_date, status, observation)
+      VALUES (${book_Id}, ${student_Id}, ${loan_date}, ${return_date}, ${status}, ${observation})
+    `;
+  } catch (error) {
+    return {
+      message: 'Erro no Banco de Dados: Falha em Criar Empréstimo.'
+        };
+  }
+ 
+   // Revalidate the cache for the loans page and redirect the user.
+  revalidatePath('/dashboard/loans');
+  redirect('/dashboard/loans');
 }
 
 export async function createStudent(prevState: StateStudent, formData: FormData) {
@@ -242,7 +314,7 @@ export async function updateBook(
   formData: FormData,
 ) {
   const validatedFields = UpdateBook.safeParse({
-    name: formData.get('name'),
+    book: formData.get('book'),
     author: formData.get('author'),
     amt_available:formData.get('amt_available'),
     observation: formData.get('observation'),
@@ -256,12 +328,12 @@ export async function updateBook(
     };
   }
  
-  const { name, author, amt_available, observation, box } = validatedFields.data;  
+  const { book, author, amt_available, observation, box } = validatedFields.data;  
  
   try {
     await sql`
       UPDATE books
-      SET name = ${name}, author = ${author}, amt_available=${amt_available}, observation=${observation}, box=${box}
+      SET book = ${book}, author = ${author}, amt_available=${amt_available}, observation=${observation}, box=${box}
       WHERE id = ${id}
     `;
   } catch (error) {
@@ -270,6 +342,43 @@ export async function updateBook(
  
   revalidatePath('/dashboard/books');
   redirect('/dashboard/books');
+}
+
+export async function updateLoan(
+  id: string,
+  prevState: StateLoan,
+  formData: FormData,
+) {
+  const validatedFields = UpdateLoan.safeParse({
+    book_Id: formData.get('book_Id'),
+    student_Id: formData.get('student_Id'),
+    loan_date: formData.get('loan_date'),
+    return_date: formData.get('return_date'),
+    status: formData.get('status'),
+    observation: formData.get('observation'),
+  });
+ 
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Faltando Campos. Falha em Atualizar Emprestimo',
+    };
+  }
+ 
+  const { book_Id, student_Id, loan_date, return_date, status, observation } = validatedFields.data; 
+   
+  try {
+    await sql`
+      UPDATE loans
+      SET book_id = ${book_Id}, student_id = ${student_Id}, loan_date = ${loan_date}, return_date = ${return_date}, status = ${status}, observation = ${observation}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Erro de Banco de Dados: Falha em Atualizar Emprestimo' };
+  }
+ 
+  revalidatePath('/dashboard/loans');
+  redirect('/dashboard/loans');
 }
 
 export async function updateStudent(

@@ -28,7 +28,7 @@ export type Invoice = {
 
 export type Book = {
   id: string;
-  name: string;
+  book: string;
   author: string;
   amt_available: number;
   amt_borrowed: number;
@@ -75,6 +75,21 @@ export type InvoicesTable = {
   status: 'pending' | 'paid';
 };
 
+export type LoansTable = {
+  id: string;
+  book_id: string;
+  student_id: string;
+  name: string;   
+  classroom: string; 
+  book: string;
+  author: string;
+  box: string;
+  loan_date: string;
+  return_date: string;
+  status: 'pending' | 'returned';
+  observation: string;
+};
+
 export type CustomersTableType = {
   id: string;
   name: string;
@@ -117,22 +132,12 @@ export type CustomerField = {
 
 export type BookField = {
   id: string;
-  name: string;
-  author: string;
-  amt_available: number;
-  amt_borrowed: number;
-  observation: string;
-  inclusion_date: string;
-  box: string;
+  book: string;  
 };
 
 export type StudentField = {
   id: string;
-  name: string;
-  age: number;
-  classroom: string;
-  inclusion_date: string;
-  observation: string;
+  name: string; 
 };
 
 
@@ -145,13 +150,23 @@ export type InvoiceForm = {
 
 export type BookForm = {
   id: string;
-  name: string;
+  book: string;
   author: string;
   amt_available: number;
   amt_borrowed: number;
   observation: string;
   inclusion_date: string;
   box: string;
+};
+
+export type LoanForm = {
+  id: string;
+  book_id: string;
+  student_id: string;  
+  loan_date: string;
+  return_date: string;
+  status: 'pending' | 'returned';
+  observation: string;
 };
 
 export type StudentForm = {

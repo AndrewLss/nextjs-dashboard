@@ -8,12 +8,13 @@ import {
   InvoiceForm,
   InvoicesTable,
   LatestInvoiceRaw,
+  LoanForm,
+  LoansTable,
   Student,
   StudentField,
   StudentForm,
   User,
-  Revenue,
-  //StudentField,
+  Revenue,  
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -134,6 +135,50 @@ export async function fetchFilteredInvoices(
   }
 }
 
+export async function fetchFilteredLoans(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const loans = await sql<LoansTable>`
+      SELECT
+        loans.id,
+        loans.loan_date,
+        loans.return_date,
+        loans.status,
+        loans.observation,
+        students.name,        
+        students.classroom,
+        books.book,
+        books.author,
+        books.box
+      FROM loans
+      INNER JOIN students ON loans.student_id = students.id
+      INNER JOIN books ON loans.book_id = books.id
+      WHERE
+        students.name ILIKE ${`%${query}%`} OR
+        students.age::text ILIKE ${`%${query}%`} OR
+        students.classroom ILIKE ${`%${query}%`} OR
+        books.book ILIKE ${`%${query}%`} OR
+        books.author ILIKE ${`%${query}%`} OR
+        books.box ILIKE ${`%${query}%`} OR
+        loans.loan_date::text ILIKE ${`%${query}%`} OR
+        loans.return_date::text ILIKE ${`%${query}%`} OR
+        loans.status ILIKE ${`%${query}%`}
+      ORDER BY loans.loan_date DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return loans.rows;
+  } catch (error) {
+    console.error('Erro de banco de Dados:', error);
+    throw new Error('Falha em buscar emprestimos.');
+  }
+}
+
 export async function fetchFilteredBooks(
   query: string,
   currentPage: number,
@@ -145,7 +190,7 @@ export async function fetchFilteredBooks(
     const books = await sql<Book>`
       SELECT
         id,
-        name,
+        book,
         author,
         amt_available,
         amt_borrowed,
@@ -154,14 +199,14 @@ export async function fetchFilteredBooks(
         box      
       FROM books      
       WHERE
-        books.name ILIKE ${`%${query}%`} OR
+        books.book ILIKE ${`%${query}%`} OR
         books.author ILIKE ${`%${query}%`} OR
         books.amt_available::text ILIKE ${`%${query}%`} OR
         books.amt_borrowed::text ILIKE ${`%${query}%`} OR
         books.observation ILIKE ${`%${query}%`} OR
         books.inclusion_date::text ILIKE ${`%${query}%`} OR
         books.box ILIKE ${`%${query}%`}
-      ORDER BY books.name ASC     
+      ORDER BY books.book ASC     
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
@@ -228,13 +273,39 @@ export async function fetchInvoicesPages(query: string) {
   }
 }
 
+export async function fetchLoansPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)        
+      FROM loans
+      INNER JOIN students ON loans.student_id = students.id
+      INNER JOIN books ON loans.book_id = books.id
+      WHERE
+        students.name ILIKE ${`%${query}%`} OR
+        students.classroom ILIKE ${`%${query}%`} OR
+        books.book ILIKE ${`%${query}%`} OR
+        books.author ILIKE ${`%${query}%`} OR
+        books.box ILIKE ${`%${query}%`} OR
+        loans.loan_date::text ILIKE ${`%${query}%`} OR
+        loans.return_date::text ILIKE ${`%${query}%`} OR
+        loans.status ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Erro de Banco de Dados:', error);
+    throw new Error('Falha em buscar o total de empréstimos.');
+  }
+}
+
 export async function fetchBooksPages(query: string) {
   noStore();
   try {
     const count = await sql`SELECT COUNT(*)
     FROM books    
     WHERE
-      books.name ILIKE ${`%${query}%`} OR
+      books.book ILIKE ${`%${query}%`} OR
       books.author ILIKE ${`%${query}%`} OR
       books.amt_available::text ILIKE ${`%${query}%`} OR
       books.amt_borrowed::text ILIKE ${`%${query}%`} OR
@@ -304,7 +375,7 @@ export async function fetchBookById(id: string) {
     const data = await sql<BookForm>`
       SELECT
         books.id,
-        books.name,
+        books.book,
         books.author,
         books.amt_available,
         books.observation,
@@ -322,6 +393,34 @@ export async function fetchBookById(id: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch book.');
+  }
+}
+
+export async function fetchLoanById(id: string) {
+  noStore();
+  try {
+    const data = await sql<LoanForm>`
+      SELECT
+        loans.id,
+        loans.book_id,
+        loans.student_id,
+        loans.loan_date,
+        loans.return_date,
+        loans.status,
+        loans.observation        
+      FROM loans      
+      WHERE loans.id = ${id};
+    `;
+
+    const loan = data.rows.map((loan) => ({
+      ...loan,      
+    }));
+    
+    console.log(loan); // Loan is an empty array []
+    return loan[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch loan.');
   }
 }
 
@@ -374,13 +473,9 @@ export async function fetchBooks() {
     const data = await sql<BookField>`
       SELECT
         id,
-        name,
-        author,
-        amt_available,
-        observation,
-        box
+        book
       FROM books
-      ORDER BY name ASC
+      ORDER BY book ASC
     `;
 
     const books = data.rows;
@@ -396,17 +491,13 @@ export async function fetchStudents() {
     const data = await sql<StudentField>`
       SELECT
         id,
-        name,
-        age,
-        classroom,
-        inclusion_date,
-        observation
+        name
       FROM students
       ORDER BY name ASC
     `;
 
-    const books = data.rows;
-    return books;
+    const students = data.rows;
+    return students;
   } catch (err) {
     console.error('Erro de Banco de Dados:', err);
     throw new Error('Falha em buscar alunos.');

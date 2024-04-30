@@ -1,7 +1,7 @@
 import Form from '@/app/ui/books/create-form'; //done
 import Breadcrumbs from '@/app/ui/books/breadcrumbs'; //ok
 import { fetchBooks } from '@/app/lib/data'; //done
-import { Metadata } from 'next';
+import { Metadata } from 'next'; //ok
  
 export const metadata: Metadata = {
   title: 'Cadastrar Livro',

@@ -1,50 +1,54 @@
-import { UpdateBook, DeleteBook } from '@/app/ui/books/buttons'; // done
-import { formatDateToLocal} from '@/app/lib/utils'; // ok
-import { fetchFilteredBooks } from '@/app/lib/data'; // done
+import { UpdateLoan, DeleteLoan } from '@/app/ui/loans/buttons'; //done
+import LoanStatus from '@/app/ui/loans/status'; //done
+import { formatDateToLocal } from '@/app/lib/utils'; //ok
+import { fetchFilteredLoans } from '@/app/lib/data'; //done
 
-export default async function BooksTable({
+export default async function LoansTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  const books = await fetchFilteredBooks(query, currentPage);
+  const loans = await fetchFilteredLoans(query, currentPage);
 
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {books?.map((book) => (
+            {loans?.map((loan) => (
               <div
-                key={book.id}
+                key={loan.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">                      
-                      <p>{book.book}</p>
-                    </div>
-                    <p className="text-sm text-gray-500">{book.author}</p>
-                  </div>                  
-                </div>
-                <div className="flex w-full items-center justify-between pt-4">
-                  <div>
-                    <p className="text-xl font-medium">
-                      {book.amt_available}
-                    </p>
-                    <p>{book.amt_borrowed}</p>
+                      <p>{loan.name}</p>
+                    </div>                    
+                    <p className="text-sm text-gray-500">{loan.classroom}</p>
                   </div>
                   <div>
                     <div className="mb-2 flex items-center">                      
-                      <p>{book.observation}</p>
-                    </div>
-                    <p className="text-sm text-gray-500">{formatDateToLocal(book.inclusion_date)}</p>
+                      <p>{loan.book}</p>
+                    </div>                    
+                    <p className="text-sm text-gray-500">{loan.author}</p>
+                    <p className="text-sm text-gray-500">{loan.box}</p>
                   </div>
+                  <LoanStatus status={loan.status} />
+                </div>
+                <div className="flex w-full items-center justify-between pt-4">
+                  <div>
+                    <p>{formatDateToLocal(loan.loan_date)}</p>
+                    <p>{formatDateToLocal(loan.return_date)}</p>
+                  </div>
+                  <div className="mb-2 flex items-center">                      
+                      <p>{loan.observation}</p>
+                  </div> 
                   <div className="flex justify-end gap-2">
-                    <UpdateBook id={book.id} />
-                    <DeleteBook id={book.id} />
+                    <UpdateLoan id={loan.id} />
+                    <DeleteLoan id={loan.id} />
                   </div>
                 </div>
               </div>
@@ -54,25 +58,31 @@ export default async function BooksTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                  Aluno
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Sala
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
                   Livro
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Autor
                 </th>
                 <th scope="col" className="px-3 py-5 text-center font-medium">
-                  Disponivel
+                  Caixa
                 </th>
-                <th scope="col" className="px-3 py-5 text-center font-medium">
-                  Emprestado
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Situacao
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Emprestado em:
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                  Devolver em:
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Observacao
-                </th>
-                <th scope="col" className="px-3 py-5 text-center font-medium">
-                  Data de Inclusao
-                </th>
-                <th scope="col" className="px-3 py-5 text-center font-medium">
-                  Caixa
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Editar</span>
@@ -80,38 +90,44 @@ export default async function BooksTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {books?.map((book) => (
+              {loans?.map((loan) => (
                 <tr
-                  key={book.id}
+                  key={loan.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">                      
-                      <p>{book.book}</p>
+                      <p>{loan.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {book.author}
-                  </td>
-                  <td className="whitespace-nowrap text-center px-3 py-3">
-                    {book.amt_available}
-                  </td>
-                  <td className="whitespace-nowrap text-center px-3 py-3">
-                    {book.amt_borrowed}
+                    {loan.classroom}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {book.observation}
+                    {loan.book}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {loan.author}
                   </td>
                   <td className="whitespace-nowrap text-center px-3 py-3">
-                    {formatDateToLocal(book.inclusion_date)}
+                    {loan.box}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    <LoanStatus status={loan.status} />
                   </td>
                   <td className="whitespace-nowrap text-center px-3 py-3">
-                    {book.box}
+                    {formatDateToLocal(loan.loan_date)}
                   </td>
+                  <td className="whitespace-nowrap text-center px-3 py-3">
+                    {formatDateToLocal(loan.return_date)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {loan.observation}
+                  </td>                  
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateBook id={book.id} />
-                      <DeleteBook id={book.id} />
+                      <UpdateLoan id={loan.id} />
+                      <DeleteLoan id={loan.id} />
                     </div>
                   </td>
                 </tr>
