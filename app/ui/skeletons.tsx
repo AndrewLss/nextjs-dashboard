@@ -29,7 +29,7 @@ export function CardsSkeleton() {
   );
 }
 
-export function RevenueChartSkeleton() {
+export function BarChartSkeleton() {
   return (
     <div className={`${shimmer} relative w-full overflow-hidden md:col-span-4`}>
       <div className="mb-4 h-8 w-36 rounded-md bg-gray-100" />
@@ -44,7 +44,7 @@ export function RevenueChartSkeleton() {
   );
 }
 
-export function InvoiceSkeleton() {
+export function LoanSkeleton() {
   return (
     <div className="flex flex-row items-center justify-between border-b border-gray-100 py-4">
       <div className="flex items-center">
@@ -59,7 +59,7 @@ export function InvoiceSkeleton() {
   );
 }
 
-export function LatestInvoicesSkeleton() {
+export function LatestLoansSkeleton() {
   return (
     <div
       className={`${shimmer} relative flex w-full flex-col overflow-hidden md:col-span-4`}
@@ -67,11 +67,11 @@ export function LatestInvoicesSkeleton() {
       <div className="mb-4 h-8 w-36 rounded-md bg-gray-100" />
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-100 p-4">
         <div className="bg-white px-6">
-          <InvoiceSkeleton />
-          <InvoiceSkeleton />
-          <InvoiceSkeleton />
-          <InvoiceSkeleton />
-          <InvoiceSkeleton />
+          <LoanSkeleton />
+          <LoanSkeleton />
+          <LoanSkeleton />
+          <LoanSkeleton />
+          <LoanSkeleton />
           <div className="flex items-center pb-2 pt-6">
             <div className="h-5 w-5 rounded-full bg-gray-200" />
             <div className="ml-2 h-4 w-20 rounded-md bg-gray-200" />
@@ -95,8 +95,8 @@ export default function DashboardSkeleton() {
         <CardSkeleton />
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <RevenueChartSkeleton />
-        <LatestInvoicesSkeleton />
+        <BarChartSkeleton />
+        <LatestLoansSkeleton />
       </div>
     </>
   );
@@ -405,7 +405,7 @@ export function LoansTableSkeleton() {
                   Caixa
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Situacao
+                  Situação
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Emprestado em:
@@ -414,7 +414,7 @@ export function LoansTableSkeleton() {
                   Devolvido em:
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Observacao
+                  Observação
                 </th>
                 <th
                   scope="col"
@@ -462,16 +462,16 @@ export function BooksTableSkeleton() {
                   Autor
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Disponivel
+                  Disponível
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Emprestado
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Observacao
+                  Observação
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Inclusao
+                  Inclusão
                 </th>
                 <th
                   scope="col"
@@ -528,10 +528,10 @@ export function StudentsTableSkeleton() {
                   Total Devolvido
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Inclusao
+                  Inclusão
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Observacao
+                  Observação
                 </th>
                 <th
                   scope="col"

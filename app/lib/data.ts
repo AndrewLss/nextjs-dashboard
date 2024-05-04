@@ -2,12 +2,14 @@ import { sql } from '@vercel/postgres';
 import {
   Book,
   BookField,
-  BookForm,  
+  BookForm,
+  Chart,  
   CustomerField,
   CustomersTableType,
   InvoiceForm,
   InvoicesTable,
   LatestInvoiceRaw,
+  LatestLoan,
   LoanForm,
   LoansTable,
   Student,
@@ -23,21 +25,28 @@ export async function fetchRevenue() {
   // Add noStore() here to prevent the response from being cached.
   // This is equivalent to in fetch(..., {cache: 'no-store'}).
   noStore();
-  try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
+  try {    
 
-    /*console.log('Fetching revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 3000));*/
-
-    const data = await sql<Revenue>`SELECT * FROM revenue`;
-
-    //console.log('Data fetch completed after 3 seconds.');
+    const data = await sql<Revenue>`SELECT * FROM revenue`;    
 
     return data.rows;
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
+  }
+}
+
+export async function fetchBarChart() {  
+  noStore();
+  try {
+    
+    const data = await sql<Chart>`SELECT * FROM bar_chart`;
+
+    return data.rows;
+  }
+  catch (error) {
+    console.error('Erro de Banco de Dados:', error);
+    throw new Error('Falha em Buscar Dados.');
   }
 }
 
@@ -62,39 +71,60 @@ export async function fetchLatestInvoices() {
   }
 }
 
+export async function fetchLatestLoans() {
+  noStore();
+  try {
+    const data = await sql<LatestLoan>`
+      SELECT loans.return_date, books.book, books.author, students.name, students.classroom, loans.id
+      FROM loans
+      INNER JOIN students ON loans.student_id = students.id
+      INNER JOIN books ON loans.book_id = books.id
+      ORDER BY loans.return_date DESC
+      LIMIT 5`;
+
+    const latestLoans = data.rows.map((loan) => ({
+      ...loan,
+    }));
+    return latestLoans;
+  } catch (error) {
+    console.error('Erro de Banco de Dados:', error);
+    throw new Error('Falha em buscar ultimos Empréstimos.');
+  }
+}
+
 export async function fetchCardData() {
   noStore();
   try {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
     // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-    const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`;
+    const bookCountPromise = sql`SELECT COUNT(*) FROM books`;
+    const studentsCountPromise = sql`SELECT COUNT(*) FROM students`;
+    const loanStatusPromise = sql`SELECT
+         SUM(CASE WHEN status = 'devolvido' THEN 1 ELSE 0 END) AS "devolvido",
+         SUM(CASE WHEN status = 'pendente' THEN 1 ELSE 0 END) AS "pendente"
+         FROM loans`;
 
     const data = await Promise.all([
-      invoiceCountPromise,
-      customerCountPromise,
-      invoiceStatusPromise,
+      bookCountPromise,
+      studentsCountPromise,
+      loanStatusPromise,
     ]);
 
-    const numberOfInvoices = Number(data[0].rows[0].count ?? '0');
-    const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
-    const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? '0');
-    const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0');
+    const numberOfBooks = Number(data[0].rows[0].count ?? '0');
+    const numberOfStudents = Number(data[1].rows[0].count ?? '0');
+    const totalReturnedLoans = Number(data[2].rows[0].devolvido ?? '0');
+    const totalPendingLoans = Number(data[2].rows[0].pendente ?? '0');
 
     return {
-      numberOfCustomers,
-      numberOfInvoices,
-      totalPaidInvoices,
-      totalPendingInvoices,
+      numberOfStudents,
+      numberOfBooks,
+      totalReturnedLoans,
+      totalPendingLoans,
     };
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch card data.');
+    console.error('Erro de Banco de Dados:', error);
+    throw new Error('Falha em buscar dados de cartoes.');
   }
 }
 
@@ -152,8 +182,7 @@ export async function fetchFilteredLoans(
         loans.observation,
         students.name,        
         students.classroom,
-        books.book,
-        books.author,
+        books.book,        
         books.box
       FROM loans
       INNER JOIN students ON loans.student_id = students.id
@@ -162,8 +191,7 @@ export async function fetchFilteredLoans(
         students.name ILIKE ${`%${query}%`} OR
         students.age::text ILIKE ${`%${query}%`} OR
         students.classroom ILIKE ${`%${query}%`} OR
-        books.book ILIKE ${`%${query}%`} OR
-        books.author ILIKE ${`%${query}%`} OR
+        books.book ILIKE ${`%${query}%`} OR        
         books.box ILIKE ${`%${query}%`} OR
         loans.loan_date::text ILIKE ${`%${query}%`} OR
         loans.return_date::text ILIKE ${`%${query}%`} OR
@@ -175,7 +203,7 @@ export async function fetchFilteredLoans(
     return loans.rows;
   } catch (error) {
     console.error('Erro de banco de Dados:', error);
-    throw new Error('Falha em buscar emprestimos.');
+    throw new Error('Falha em buscar Empréstimos.');
   }
 }
 
@@ -193,7 +221,6 @@ export async function fetchFilteredBooks(
         book,
         author,
         amt_available,
-        amt_borrowed,
         observation,
         inclusion_date,
         box      
@@ -201,8 +228,7 @@ export async function fetchFilteredBooks(
       WHERE
         books.book ILIKE ${`%${query}%`} OR
         books.author ILIKE ${`%${query}%`} OR
-        books.amt_available::text ILIKE ${`%${query}%`} OR
-        books.amt_borrowed::text ILIKE ${`%${query}%`} OR
+        books.amt_available::text ILIKE ${`%${query}%`} OR        
         books.observation ILIKE ${`%${query}%`} OR
         books.inclusion_date::text ILIKE ${`%${query}%`} OR
         books.box ILIKE ${`%${query}%`}
@@ -413,7 +439,7 @@ export async function fetchLoanById(id: string) {
     `;
 
     const loan = data.rows.map((loan) => ({
-      ...loan,      
+      ...loan,     
     }));
     
     console.log(loan); // Loan is an empty array []

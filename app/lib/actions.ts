@@ -52,7 +52,7 @@ const FormSchemaLoans = z.object({
   return_date: z.string().min(8, { 
     message: 'Por favor insira a data da devolução' 
   }),
-  status: z.enum(['pending', 'returned'], {
+  status: z.enum(['pendente', 'devolvido'], {
     invalid_type_error: 'Por favor selecione uma situação.',
   }),  
   observation: z.string(),
@@ -361,20 +361,20 @@ export async function updateLoan(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Faltando Campos. Falha em Atualizar Emprestimo',
+      message: 'Faltando Campos. Falha em Atualizar Empréstimo',
     };
   }
  
   const { book_Id, student_Id, loan_date, return_date, status, observation } = validatedFields.data; 
-   
+  
   try {
     await sql`
       UPDATE loans
-      SET book_id = ${book_Id}, student_id = ${student_Id}, loan_date = ${loan_date}, return_date = ${return_date}, status = ${status}, observation = ${observation}
+      SET book_id = ${book_Id}, student_id = ${student_Id}, loan_date = TO_TIMESTAMP(${loan_date}, 'DD-MM-YYYY'), return_date = TO_TIMESTAMP(${return_date}, 'DD-MM-YYYY'), status = ${status}, observation = ${observation}
       WHERE id = ${id}
     `;
   } catch (error) {
-    return { message: 'Erro de Banco de Dados: Falha em Atualizar Emprestimo' };
+    return { message: 'Erro de Banco de Dados: Falha em Atualizar Empréstimo' };
   }
  
   revalidatePath('/dashboard/loans');
@@ -450,9 +450,9 @@ export async function deleteLoan(id: string) {
   try {
     await sql`DELETE FROM loans WHERE id = ${id}`;
     revalidatePath('/dashboard/loans');
-    return { message: 'Emprestimo Excluido.' };
+    return { message: 'Empréstimo Excluido.' };
   } catch (error) {
-    return { message: 'Erro de Banco de Dados: Falha em Excluir Emprestimo.' };
+    return { message: 'Erro de Banco de Dados: Falha em Excluir Empréstimo.' };
   }
 }
 

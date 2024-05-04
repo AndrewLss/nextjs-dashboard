@@ -24,29 +24,27 @@ export default async function StudentsTable({
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">                      
-                      <p>{student.name}</p>
-                    </div>                    
-                  </div>                  
-                </div>
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div>
+                      <p>{student.name}</p>                      
+                    </div>                     
                     <div className="mb-2 flex">                      
                       <p>{student.classroom}</p>
-                    </div>                    
+                    </div>                   
                   </div>
-                  <div className="flex w-full items-center justify-between pt-4">
-                  <div>
+                  <div>                         
                     <p className="text-xl items-center font-medium">
-                      {student.age}
-                    </p>                   
-                  </div>                                    
+                        {student.age}
+                    </p>                                                                                     
+                  </div>                   
                 </div>
-                  <div>
-                    <p className="text-sm text-gray-500">{formatDateToLocal(student.inclusion_date)}</p>
+                <div>                
                     <div className="mb-2 flex">                      
-                      <p>{student.observation}</p>
-                    </div>                    
-                  </div>
+                      <p className="text-sm text-gray-500">{formatDateToLocal(student.inclusion_date)}</p>
+                    </div>                                        
+                </div>                  
+                <div className="flex items-center justify-between border-b pb-4">                  
+                  <div className="flex w-full items-center justify-between pt-4">
+                    <p>{student.observation}</p>                   
+                  </div>                  
                   <div className="flex justify-end gap-2">
                     <UpdateStudent id={student.id} />
                     <DeleteStudent id={student.id} />
@@ -68,10 +66,10 @@ export default async function StudentsTable({
                   Idade
                 </th>                
                 <th scope="col" className="px-3 py-5 text-center font-medium">
-                  Data de Inclusao
+                  Data de Inclusão
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Observacao
+                  Observação
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Editar</span>

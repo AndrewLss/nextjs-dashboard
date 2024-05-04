@@ -30,11 +30,10 @@ export default async function LoansTable({
                     <p className="text-sm text-gray-500">{loan.classroom}</p>
                   </div>
                   <div>
-                    <div className="mb-2 flex items-center">                      
+                    <div className="mb-2 flex text-center">                      
                       <p>{loan.book}</p>
-                    </div>                    
-                    <p className="text-sm text-gray-500">{loan.author}</p>
-                    <p className="text-sm text-gray-500">{loan.box}</p>
+                    </div> 
+                    <p className="text-sm text-center text-gray-500">{loan.box}</p>
                   </div>
                   <LoanStatus status={loan.status} />
                 </div>
@@ -65,24 +64,21 @@ export default async function LoansTable({
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Livro
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Autor
-                </th>
+                </th>                
                 <th scope="col" className="px-3 py-5 text-center font-medium">
                   Caixa
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Situacao
+                  Situação
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Emprestado em:
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Devolver em:
+                  Devolução em:
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Observacao
+                  Observação
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Editar</span>
@@ -105,10 +101,7 @@ export default async function LoansTable({
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {loan.book}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {loan.author}
-                  </td>
+                  </td>                  
                   <td className="whitespace-nowrap text-center px-3 py-3">
                     {loan.box}
                   </td>

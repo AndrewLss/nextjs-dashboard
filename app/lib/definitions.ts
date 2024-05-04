@@ -30,8 +30,7 @@ export type Book = {
   id: string;
   book: string;
   author: string;
-  amt_available: number;
-  amt_borrowed: number;
+  amt_available: number;  
   observation: string;
   inclusion_date: string;
   box: string;
@@ -51,12 +50,26 @@ export type Revenue = {
   revenue: number;
 };
 
+export type Chart = {
+  weekday: string;
+  amount: number;  
+};
+
 export type LatestInvoice = {
   id: string;
   name: string;
   image_url: string;
   email: string;
   amount: string;
+};
+
+export type LatestLoan = {
+  id: string;
+  book: string;
+  author: string;
+  name: string;
+  classroom: string;
+  return_date: string;
 };
 
 // The database returns a number for amount, but we later format it to a string with the formatCurrency function
@@ -82,11 +95,10 @@ export type LoansTable = {
   name: string;   
   classroom: string; 
   book: string;
-  author: string;
   box: string;
   loan_date: string;
   return_date: string;
-  status: 'pending' | 'returned';
+  status: 'pendente' | 'devolvido';
   observation: string;
 };
 
@@ -165,7 +177,7 @@ export type LoanForm = {
   student_id: string;  
   loan_date: string;
   return_date: string;
-  status: 'pending' | 'returned';
+  status: 'pendente' | 'devolvido';
   observation: string;
 };
 

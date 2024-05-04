@@ -82,7 +82,7 @@ export default function EditBookForm({ book }: { book: BookForm }) {
         {/* Quantidade */}
         <div className="mb-4">
           <label htmlFor="amt_available" className="mb-2 block text-sm font-medium">
-            Insira a Quantidade Disponivel
+            Insira a Quantidade Disponível
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -112,7 +112,7 @@ export default function EditBookForm({ book }: { book: BookForm }) {
         {/* Observação */}
         <div className="mb-4">
           <label htmlFor="observation" className="mb-2 block text-sm font-medium">
-            Observacoes
+            Observações
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">

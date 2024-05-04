@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'; //ok
 import { Metadata } from 'next'; //ok
  
 export const metadata: Metadata = {
-  title: 'Editar Emprestimo',
+  title: 'Editar Empréstimo',
 };
  
 export default async function Page({ params }: { params: { id: string } }) {
@@ -24,9 +24,9 @@ export default async function Page({ params }: { params: { id: string } }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Emprestimos', href: '/dashboard/loans' },
+          { label: 'Empréstimos', href: '/dashboard/loans' },
           {
-            label: 'Editar Emprestimo',
+            label: 'Editar Empréstimo',
             href: `/dashboard/loans/${id}/edit`,
             active: true,
           },

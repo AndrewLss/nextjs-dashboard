@@ -92,7 +92,7 @@ export default function Form({ students, books }: { students: StudentField[], bo
         {/* Data do Empréstimo */}
         <div className="mb-4">
           <label htmlFor="loan_date" className="mb-2 block text-sm font-medium">
-            Selecione a data do Emprestimo
+            Selecione a data do Empréstimo
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -120,7 +120,7 @@ export default function Form({ students, books }: { students: StudentField[], bo
         {/* Data da Devolução */}
         <div className="mb-4">
           <label htmlFor="return_date" className="mb-2 block text-sm font-medium">
-            Selecione a data de Devolucao
+            Selecione a data de Devolução
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -148,21 +148,21 @@ export default function Form({ students, books }: { students: StudentField[], bo
         {/* Situação do Empréstimo */}
         <fieldset>
           <legend className="mb-2 block text-sm font-medium">
-            Selecione a Situacao
+            Selecione a Situação
           </legend>
           <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
             <div className="flex gap-4">
               <div className="flex items-center">
                 <input
-                  id="pending"
+                  id="pendente"
                   name="status"
                   type="radio"
-                  value="pending"
+                  value="pendente"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                   aria-describedby="status-error"
                 />
                 <label
-                  htmlFor="pending"
+                  htmlFor="pendente"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
                   Pendente <ClockIcon className="h-4 w-4" />
@@ -170,14 +170,14 @@ export default function Form({ students, books }: { students: StudentField[], bo
               </div>
               <div className="flex items-center">
                 <input
-                  id="returned"
+                  id="devolvido"
                   name="status"
                   type="radio"
-                  value="returned"
+                  value="devolvido"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                 <label
-                  htmlFor="returned"
+                  htmlFor="devolvido"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
                   Devolvido <CheckIcon className="h-4 w-4" />
@@ -198,7 +198,7 @@ export default function Form({ students, books }: { students: StudentField[], bo
         {/* Observação */}
         <div className="mb-4">
           <label htmlFor="observation" className="mb-2 block text-sm font-medium">
-            Observacoes
+            Observações
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -231,7 +231,7 @@ export default function Form({ students, books }: { students: StudentField[], bo
         >
           Cancelar
         </Link>
-        <Button type="submit">Criar Emprestimo</Button>
+        <Button type="submit">Criar Empréstimo</Button>
       </div>
     </form>
   );

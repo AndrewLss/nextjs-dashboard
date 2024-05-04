@@ -111,7 +111,7 @@ export default function EditStudentForm({ student }: { student: StudentForm }) {
         {/* Observação */}
         <div className="mb-4">
           <label htmlFor="observation" className="mb-2 block text-sm font-medium">
-            Observacoes
+            Observações
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
