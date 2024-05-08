@@ -26,9 +26,7 @@ const FormSchemaBooks = z.object({
   book: z.string().min(3, { 
     message: "Por favor insira o nome do livro" 
   }),
-  author: z.string().min(3, { 
-    message: "Por favor insira o autor" 
-  }),
+  author: z.string(),
   amt_available: z.coerce.number()
   .gt(0, { message: 'Por favor insira uma quantidade maior que 0.' }),
   observation: z.string(),
