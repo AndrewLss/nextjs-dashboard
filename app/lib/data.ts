@@ -75,11 +75,12 @@ export async function fetchLatestLoans() {
   noStore();
   try {
     const data = await sql<LatestLoan>`
-      SELECT loans.return_date, books.book, books.author, students.name, students.classroom, loans.id
+      SELECT loans.return_date, loans.status, books.book, books.author, students.name, students.classroom, loans.id
       FROM loans
       INNER JOIN students ON loans.student_id = students.id
       INNER JOIN books ON loans.book_id = books.id
-      ORDER BY loans.return_date DESC
+      WHERE loans.status = 'pendente'
+      ORDER BY loans.return_date ASC
       LIMIT 5`;
 
     const latestLoans = data.rows.map((loan) => ({

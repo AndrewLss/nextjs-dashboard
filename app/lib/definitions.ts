@@ -70,6 +70,7 @@ export type LatestLoan = {
   name: string;
   classroom: string;
   return_date: string;
+  status: string;
 };
 
 // The database returns a number for amount, but we later format it to a string with the formatCurrency function
