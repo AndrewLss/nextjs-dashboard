@@ -335,7 +335,6 @@ export async function fetchBooksPages(query: string) {
       books.book ILIKE ${`%${query}%`} OR
       books.author ILIKE ${`%${query}%`} OR
       books.amt_available::text ILIKE ${`%${query}%`} OR
-      books.amt_borrowed::text ILIKE ${`%${query}%`} OR
       books.observation ILIKE ${`%${query}%`} OR
       books.inclusion_date::text ILIKE ${`%${query}%`}
   `;

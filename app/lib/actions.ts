@@ -74,8 +74,8 @@ const FormSchemaStudent = z.object({
  
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
-const CreateBook = FormSchemaBooks.omit({ id: true, amt_borrowed: true, inclusion_date: true });
-const UpdateBook = FormSchemaBooks.omit({ id: true, amt_borrowed: true, inclusion_date: true });
+const CreateBook = FormSchemaBooks.omit({ id: true, inclusion_date: true });
+const UpdateBook = FormSchemaBooks.omit({ id: true, inclusion_date: true });
 const CreateLoan = FormSchemaLoans.omit({ id: true });
 const UpdateLoan = FormSchemaLoans.omit({ id: true });
 const CreateStudent = FormSchemaStudent.omit({ id: true, inclusion_date: true });
