@@ -37,9 +37,9 @@ export default function Form({ students, books }: { students: StudentField[], bo
               <option value="" disabled>
                 Selecione um aluno
               </option>
-              {students.map((name) => (
-                <option key={name.id} value={name.id}>
-                  {name.name}
+              {students.map((student) => (
+                <option key={student.id} value={student.id}>
+                  {student.name}
                 </option>
               ))}
             </select>
@@ -71,9 +71,9 @@ export default function Form({ students, books }: { students: StudentField[], bo
               <option value="" disabled>
                 Selecione um livro
               </option>
-              {books.map((name) => (
-                <option key={name.id} value={name.id}>
-                  {name.book}
+              {books.map((book) => (
+                <option key={book.id} value={book.id}>
+                  {book.book}
                 </option>
               ))}
             </select>

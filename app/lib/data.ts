@@ -130,6 +130,7 @@ export async function fetchCardData() {
 }
 
 const ITEMS_PER_PAGE = 6;
+
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number,
@@ -495,6 +496,7 @@ export async function fetchCustomers() {
 }
 
 export async function fetchBooks() {
+  noStore();
   try {
     const data = await sql<BookField>`
       SELECT
@@ -514,6 +516,7 @@ export async function fetchBooks() {
 
 export async function fetchStudents() {
   try {
+    noStore();
     const data = await sql<StudentField>`
       SELECT
         id,

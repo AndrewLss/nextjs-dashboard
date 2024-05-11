@@ -7,8 +7,8 @@ import { fetchLatestLoans } from '@/app/lib/data'; //done
 export default async function LatestLoans() { // Remove props
   const latestLoans = await fetchLatestLoans();
   return (
-    <div className="flex w-full flex-col md:col-span-4">
-      <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl py-3`}>
+    <div className="flex w-full flex-col md:col-span-6">
+      <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Próximas Devoluções
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
