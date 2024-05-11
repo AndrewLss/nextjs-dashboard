@@ -22,7 +22,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form books={books} />
+      <Form />
     </main>
   );
 }

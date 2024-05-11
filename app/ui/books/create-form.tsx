@@ -1,6 +1,5 @@
 'use client';
 
-import { BookField } from '@/app/lib/definitions'; //done
 import Link from 'next/link'; //ok
 import {
   ArchiveBoxIcon,
@@ -13,7 +12,7 @@ import { Button } from '@/app/ui/button'; //ok
 import { createBook } from '@/app/lib/actions'; //done
 import { useFormState } from 'react-dom'; //ok
 
-export default function Form({ books }: { books: BookField[] }) {
+export default function Form() {
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(createBook, initialState);
   return (

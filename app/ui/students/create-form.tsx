@@ -1,6 +1,5 @@
 'use client';
 
-import { StudentField } from '@/app/lib/definitions'; //done
 import Link from 'next/link'; //ok
 import {
   CalendarIcon,  
@@ -12,7 +11,7 @@ import { Button } from '@/app/ui/button'; //ok
 import { createStudent } from '@/app/lib/actions'; //done
 import { useFormState } from 'react-dom'; //ok
 
-export default function Form({ students }: { students: StudentField[] }) {
+export default function Form() {
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(createStudent, initialState);
   return (
