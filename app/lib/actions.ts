@@ -427,6 +427,7 @@ export async function deleteInvoice(id: string) {
 export async function deleteBook(id: string) {
   try {
     await sql`DELETE FROM books WHERE id = ${id}`;
+    await sql`DELETE FROM loans WHERE book_id = ${id}`;
     revalidatePath('/dashboard/books');
     return { message: 'Livro Excluido.' };
   } catch (error) {
@@ -437,6 +438,7 @@ export async function deleteBook(id: string) {
 export async function deleteStudent(id: string) {
   try {
     await sql`DELETE FROM students WHERE id = ${id}`;
+    await sql`DELETE FROM loans WHERE student_id = ${id}`;
     revalidatePath('/dashboard/students');
     return { message: 'Aluno Excluido.' };
   } catch (error) {

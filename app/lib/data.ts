@@ -80,8 +80,8 @@ export async function fetchLatestLoans() {
       INNER JOIN students ON loans.student_id = students.id
       INNER JOIN books ON loans.book_id = books.id
       WHERE loans.status = 'pendente'
-      ORDER BY loans.return_date ASC
-      LIMIT 5`;
+      ORDER BY loans.return_date ASC`;
+      //LIMIT 5
 
     const latestLoans = data.rows.map((loan) => ({
       ...loan,
@@ -198,7 +198,7 @@ export async function fetchFilteredLoans(
         loans.loan_date::text ILIKE ${`%${query}%`} OR
         loans.return_date::text ILIKE ${`%${query}%`} OR
         loans.status ILIKE ${`%${query}%`}
-      ORDER BY loans.loan_date DESC
+      ORDER BY loans.status DESC, loans.loan_date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 

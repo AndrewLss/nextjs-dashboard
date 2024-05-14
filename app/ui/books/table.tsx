@@ -82,7 +82,7 @@ export default async function BooksTable({
                   key={book.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                  <td className="py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">                      
                       <p>{book.book}</p>
                     </div>
@@ -90,7 +90,7 @@ export default async function BooksTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">                                       
                       <p>{book.author}</p>                   
                   </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">                                       
+                  <td className="py-3 pl-6 pr-3">                                       
                       <p>{book.observation}</p>                    
                   </td>
                   <td className="whitespace-nowrap text-center px-3 py-3">

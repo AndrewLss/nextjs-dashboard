@@ -8,7 +8,7 @@ export default async function LatestLoans() { // Remove props
   const latestLoans = await fetchLatestLoans();
   return (
     <div className="flex w-full flex-col md:col-span-6">
-      <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
+      <h2 className={`${lusitana.className} mb-4 text-xl px-9 md:text-2xl`}>
         Próximas Devoluções
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
@@ -51,15 +51,15 @@ export default async function LatestLoans() { // Remove props
               <div
                 key={loan.id}
                 className={clsx(
-                  'flex flex-row items-center justify-between py-4',
+                  'flex grid grid-cols-9 gap-4 flex-row space-x-6 py-4',
                   {
                     'border-t': i !== 0,
                   },
                 )}
               >
-                <div className="flex items-center">                  
+                <div className="flex col-span-4 items-center">                  
                   <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold md:text-base">
+                  <p className="text-sm font-semibold md:text-base">
                       {loan.name}
                     </p>
                     <p className="hidden text-sm text-gray-500 sm:block">
@@ -67,21 +67,25 @@ export default async function LatestLoans() { // Remove props
                     </p>                    
                   </div>
                 </div>
-                <div className="flex items-center">                  
+                <div className="flex col-span-3 items-center">                  
                   <div className="min-w-0">                  
-                    <p className="truncate text-sm text-center font-semibold md:text-base">
+                    <p className="text-sm font-semibold md:text-base">
                       {loan.book}
                     </p>
-                    <p className="hidden text-sm text-center text-gray-500 sm:block">
+                    <p className="hidden text-sm text-gray-500 sm:block">
                       {loan.author}
                     </p>
                   </div>
                 </div>
-                <p
-                  className={`${lusitana.className} truncate text-sm text-rose-600 font-semibold md:text-base`}
-                >
-                  {formatDateToLocal(loan.return_date)}
-                </p>
+                <div className="flex justify-center col-span-2 items-center">
+                  <div className="min-w-0">
+                    <p
+                      className={`${lusitana.className} text-sm text-rose-600 font-semibold md:text-base`}
+                    >
+                      {formatDateToLocal(loan.return_date)}
+                    </p>
+                  </div>
+                </div>                
               </div>
             );
           })}
